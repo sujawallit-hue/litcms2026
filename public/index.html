@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laar Institute Management System</title>
+<style>
+:root{--navy:#0b2341;--blue:#0d5bd7;--yellow:#f5c542;--bg:#f4f7fb;--card:#fff;--muted:#6b7280;--line:#e5e7eb;--danger:#c62828;--green:#137333}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:#172033}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.hidden{display:none!important}
+#loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#071a31,#0d5bd7)}
+.login-card{width:min(430px,100%);background:#fff;border-radius:22px;padding:34px;box-shadow:0 24px 70px #0004}
+.logo{width:64px;height:64px;border-radius:16px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:900;margin:auto auto 14px}
+.login-card h1{text-align:center;margin:0 0 6px;color:var(--navy)}.login-card p{text-align:center;color:var(--muted);margin:0 0 24px}
+.field{margin:14px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:11px 12px;border:1px solid #d6dbe4;border-radius:10px;outline:none;background:#fff}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #0d5bd71a}
+.primary{border:0;background:var(--blue);color:#fff;padding:12px 16px;border-radius:10px;font-weight:800;width:100%}
+.message{margin-top:12px;padding:10px 12px;border-radius:9px;font-size:13px}.error{background:#fff0f0;color:var(--danger)}.success{background:#effaf2;color:var(--green)}
+#app{min-height:100vh;display:flex}.sidebar{width:245px;background:var(--navy);color:#fff;padding:20px 14px;position:fixed;left:0;top:0;bottom:0;overflow:auto}
+.brand{font-size:19px;font-weight:900;padding:10px 10px 20px}.brand small{display:block;font-size:11px;font-weight:500;color:#b8c8dc;margin-top:4px}
+.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#dbe7f6;text-align:left;padding:11px 12px;border-radius:9px}.nav button:hover,.nav button.active{background:#ffffff16;color:#fff}
+.main{margin-left:245px;width:calc(100% - 245px);padding:24px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px}.topbar h2{margin:0;color:var(--navy)}
+.logout{border:1px solid #d7dce5;background:#fff;padding:9px 14px;border-radius:9px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}.card .num{font-size:28px;font-weight:900;color:var(--navy)}.card .label{font-size:13px;color:var(--muted);margin-top:4px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px}.panel h3{margin:0 0 14px}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.form-grid .field{margin:0}.form-actions{grid-column:1/-1;display:flex;gap:10px}.form-actions button{width:auto}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:700px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{background:#f8fafc;color:#42506a}.del{border:0;background:#fff0f0;color:var(--danger);padding:6px 9px;border-radius:7px}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}.pill{display:inline-block;background:#edf4ff;color:var(--blue);padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800}
+.empty{color:var(--muted);padding:20px;text-align:center}
+.user-chip{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--navy);font-weight:700}
+.role-badge{background:#edf4ff;color:var(--blue);padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.edit-btn{border:0;background:#edf4ff;color:var(--blue);padding:6px 9px;border-radius:7px;margin-right:6px}
+.secondary{border:1px solid #d7dce5;background:#fff;color:#172033;padding:10px 14px;border-radius:10px;font-weight:700}
+.actions-cell{white-space:nowrap}
+.filter-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:14px}
+.filter-bar .field{margin:0;min-width:160px;flex:1}
+.inline-select,.inline-input{width:100%;padding:7px 9px;border:1px solid #d6dbe4;border-radius:8px;background:#fff;font-size:13px}
+.inline-select:focus,.inline-input:focus{border-color:var(--blue);outline:none}
+.sub-muted{color:var(--muted);font-size:12px}
+@media(max-width:900px){.sidebar{position:static;width:100%;height:auto}.nav{grid-template-columns:repeat(2,1fr)}.main{margin-left:0;width:100%;padding:14px}.cards{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.app{display:block}}
+@media(max-width:520px){.cards{grid-template-columns:1fr}.topbar{align-items:flex-start}.nav{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<section id="loginPage">
+  <div class="login-card">
+    <div class="logo">LIT</div>
+    <h1>Laar Institute</h1>
+    <p>Principal &amp; Teacher Portal</p>
+    <form id="loginForm">
+      <div class="field"><label for="usernameInput">Username</label><input id="usernameInput" autocomplete="username" required></div>
+      <div class="field"><label for="passwordInput">Password</label><input id="passwordInput" type="password" autocomplete="current-password" required></div>
+      <button id="loginBtn" class="primary" type="submit">Login</button>
+      <div id="loginMessage" class="message hidden"></div>
+    </form>
+  </div>
+</section>
+
+<section id="app" class="hidden">
+  <aside class="sidebar">
+    <div class="brand">LAAR INSTITUTE<small>Management System</small></div>
+    <nav id="nav" class="nav"></nav>
+  </aside>
+  <main class="main">
+    <div class="topbar">
+      <h2 id="pageTitle">Dashboard</h2>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div id="userChip" class="user-chip"></div>
+        <button id="logoutBtn" class="logout">Logout</button>
+      </div>
+    </div>
+    <div id="content"></div>
+  </main>
+</section>
+
+<script>
+"use strict";
+
+function todayIso(){
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+const state = {
+  token: localStorage.getItem("lit_token") || "",
+  user: null,
+  data: {},
+  page: "dashboard",
+  editing: null,
+  confirmDeleteKeyId: null,
+  filters: {
+    course: "",
+    batch: "",
+    date: todayIso(),
+    topic: "",
+    test: ""
+  }
+};
+
+const TEACHER_WRITABLE = new Set(["lessons", "attendance", "progress", "practicals", "tests", "results"]);
+
+const entities = {
+  students: {title:"Students", fields:["name","father","phone","course","teacher","shift","batch","admissionDate"]},
+  teachers: {title:"Teachers", fields:["name","phone","specialization","email","username","password"]},
+  courses: {title:"Courses", fields:["name","duration","fee","description"]},
+  shifts: {title:"Shifts", fields:["name","start","end"]},
+  batches: {title:"Batches", fields:["name","course","shift","startDate"]},
+  modules: {title:"Modules", fields:["course","name","order"]},
+  topics: {title:"Topics", fields:["course","module","name","order"]},
+  lessons: {title:"Daily Classes", fields:["date","course","teacher","topic","details"]},
+  attendance: {title:"Attendance", fields:["date","student","status","remarks"]},
+  progress: {title:"Progress", fields:["student","topic","status","remarks"]},
+  practicals: {title:"Practical Work", fields:["date","student","title","status","remarks"]},
+  tests: {title:"Tests", fields:["date","course","title","totalMarks"]},
+  results: {title:"Results", fields:["test","student","marks","grade","remarks"]}
+};
+
+const STATUS_OPTIONS = {
+  attendance: ["Present", "Absent", "Late", "Leave"],
+  progress: ["Not Started", "In Progress", "Completed"],
+  practicals: ["Pending", "In Progress", "Completed", "Checked"]
+};
+
+const navItems = [
+  ["dashboard","Dashboard"],
+  ["students","Students"],
+  ["teachers","Teachers"],
+  ["courses","Courses"],
+  ["modules","Course Outline"],
+  ["lessons","Daily Classes"],
+  ["attendance","Attendance"],
+  ["progress","Progress"],
+  ["practicals","Practical Work"],
+  ["tests","Tests & Results"],
+  ["shifts","Shifts"],
+  ["batches","Batches"]
+];
+
+const $ = (id) => document.getElementById(id);
+
+function isPrincipal(){
+  return state.user?.role === "Principal";
+}
+function canWriteEntity(key){
+  return isPrincipal() || TEACHER_WRITABLE.has(key);
+}
+function getList(name){
+  return Array.isArray(state.data[name]) ? state.data[name] : [];
+}
+function showLoginMessage(message, ok=false){
+  const el=$("loginMessage"); el.textContent=message; el.className="message "+(ok?"success":"error");
+}
+function setLoggedIn(on){
+  $("loginPage").classList.toggle("hidden",on);
+  $("app").classList.toggle("hidden",!on);
+}
+function renderUserChip(){
+  const u=state.user;
+  if(!u){$("userChip").innerHTML="";return;}
+  $("userChip").innerHTML=`<span>${escapeHtml(u.name || u.username)}</span><span class="role-badge">${escapeHtml(u.role)}</span>`;
+}
+async function api(path, options={}){
+  const headers={"content-type":"application/json",...(options.headers||{})};
+  if(state.token) headers.authorization="Bearer "+state.token;
+  const res=await fetch("/api/"+path,{...options,headers});
+  let body={};
+  try{body=await res.json()}catch{}
+  if(!res.ok) throw new Error(body.message || ("Request failed ("+res.status+")"));
+  return body;
+}
+
+async function loginUser(event){
+  event.preventDefault();
+  const btn=$("loginBtn"); btn.disabled=true; btn.textContent="Signing in...";
+  try{
+    const body=await api("login",{method:"POST",body:JSON.stringify({
+      username:$("usernameInput").value.trim(),
+      password:$("passwordInput").value
+    })});
+    state.token=body.token;
+    state.user=body.user || null;
+    localStorage.setItem("lit_token",state.token);
+    showLoginMessage("Login successful.",true);
+    await loadData();
+    if(!isPrincipal() && state.page==="teachers") state.page="dashboard";
+    setLoggedIn(true);
+    renderUserChip();
+    renderNav();
+    render();
+  }catch(err){
+    showLoginMessage(err.message || "Login failed.");
+  }finally{
+    btn.disabled=false; btn.textContent="Login";
+  }
+}
+
+async function loadData(){
+  const body=await api("data");
+  state.data=body.data || {};
+  if(body.user) state.user=body.user;
+}
+
+async function logout(){
+  try{await api("logout",{method:"POST",body:"{}"});}catch{}
+  state.token=""; state.user=null; state.editing=null; state.confirmDeleteKeyId=null;
+  localStorage.removeItem("lit_token"); setLoggedIn(false);
+  $("passwordInput").value="";
+  $("loginMessage").className="message hidden";
+}
+
+function renderNav(){
+  const visibleItems=navItems.filter(([id])=>id!=="teachers" || isPrincipal());
+  $("nav").innerHTML=visibleItems.map(([id,label]) =>
+    `<button class="${state.page===id?"active":""}" data-page="${id}">${label}</button>`
+  ).join("");
+  $("nav").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+    state.page=b.dataset.page;
+    state.editing=null;
+    state.confirmDeleteKeyId=null;
+    renderNav();
+    render();
+  }));
+}
+
+function count(name){return getList(name).length}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+function uniqueValues(arr){
+  const seen = new Set();
+  const out = [];
+  for(const v of arr){
+    const s = String(v || "").trim();
+    if(s && !seen.has(s.toLowerCase())){
+      seen.add(s.toLowerCase());
+      out.push(s);
+    }
+  }
+  return out;
+}
+
+function getCourseNames(){
+  return uniqueValues([
+    ...getList("courses").map(c=>c.name),
+    ...getList("students").map(s=>s.course)
+  ]);
+}
+function getBatchNames(){
+  return uniqueValues([
+    ...getList("batches").map(b=>b.name),
+    ...getList("students").map(s=>s.batch)
+  ]);
+}
+function getFilteredStudents(courseFilter=state.filters.course, batchFilter=state.filters.batch){
+  return getList("students").filter(s=>{
+    if(courseFilter && String(s.course||"").trim().toLowerCase() !== courseFilter.trim().toLowerCase()) return false;
+    if(batchFilter && String(s.batch||"").trim().toLowerCase() !== batchFilter.trim().toLowerCase()) return false;
+    return true;
+  });
+}
+
+function studentFilterBarHtml({ showDate=false, extraHtml="" } = {}){
+  const courses = getCourseNames();
+  const batches = getBatchNames();
+  return `<div class="filter-bar">
+    ${showDate ? `<div class="field"><label>Date</label><input id="filterDate" type="date" value="${escapeHtml(state.filters.date || todayIso())}"></div>` : ""}
+    <div class="field">
+      <label>Filter by Course</label>
+      <select id="filterCourse">
+        <option value="">All Courses</option>
+        ${courses.map(c=>`<option value="${escapeHtml(c)}" ${state.filters.course===c?"selected":""}>${escapeHtml(c)}</option>`).join("")}
+      </select>
+    </div>
+    <div class="field">
+      <label>Filter by Batch</label>
+      <select id="filterBatch">
+        <option value="">All Batches</option>
+        ${batches.map(b=>`<option value="${escapeHtml(b)}" ${state.filters.batch===b?"selected":""}>${escapeHtml(b)}</option>`).join("")}
+      </select>
+    </div>
+    ${extraHtml}
+  </div>`;
+}
+
+function bindFilterBarEvents(onChange){
+  if($("filterDate")){
+    $("filterDate").addEventListener("change",(e)=>{state.filters.date=e.target.value || todayIso(); onChange();});
+  }
+  if($("filterCourse")){
+    $("filterCourse").addEventListener("change",(e)=>{state.filters.course=e.target.value; onChange();});
+  }
+  if($("filterBatch")){
+    $("filterBatch").addEventListener("change",(e)=>{state.filters.batch=e.target.value; onChange();});
+  }
+}
+
+function studentRosterTableHtml(students, emptyText="No students added by Principal yet."){
+  if(!students.length) return `<div class="empty">${escapeHtml(emptyText)}</div>`;
+  return `<table><thead><tr><th>Name</th><th>Father</th><th>Phone</th><th>Course</th><th>Teacher</th><th>Shift</th><th>Batch</th></tr></thead><tbody>
+    ${students.map(s=>`<tr>
+      <td><strong>${escapeHtml(s.name)}</strong></td>
+      <td>${escapeHtml(s.father)}</td>
+      <td>${escapeHtml(s.phone)}</td>
+      <td>${escapeHtml(s.course)}</td>
+      <td>${escapeHtml(s.teacher)}</td>
+      <td>${escapeHtml(s.shift)}</td>
+      <td>${escapeHtml(s.batch)}</td>
+    </tr>`).join("")}
+  </tbody></table>`;
+}
+
+function renderDashboard(){
+  const cards=[
+    ["students","Students"],["teachers","Teachers"],["courses","Courses"],["attendance","Attendance"],
+    ["practicals","Practical Work"],["tests","Tests"],["results","Results"],["lessons","Daily Classes"]
+  ];
+  const roleNote=isPrincipal()
+    ? "Manage students, teachers (including teacher login usernames and passwords), courses, daily classes, attendance, progress, practical work and tests from one place."
+    : `Signed in as Teacher (${escapeHtml(state.user?.name || state.user?.username)}). Students added by Principal automatically appear in Daily Classes, Attendance, Progress, Practical Work, and Tests & Results.`;
+  const students = getList("students");
+  $("content").innerHTML=`<div class="cards">${cards.map(([k,l])=>`<div class="card"><div class="num">${count(k)}</div><div class="label">${l}</div></div>`).join("")}</div>
+  <div class="panel"><h3>Welcome to Laar Institute Management System</h3>
+  <p style="color:#667085;margin:0">${roleNote}</p></div>
+  <div class="panel">
+    <div class="section-title"><h3>Enrolled Students</h3><span class="pill">${students.length} students</span></div>
+    <div class="table-wrap" style="margin-top:12px">${studentRosterTableHtml(students)}</div>
+  </div>`;
+}
+
+function selectHtml(name, options, selectedValue, placeholder="Select..."){
+  const val = String(selectedValue ?? "");
+  const hasCurrent = val && options.some(o=>o.value === val);
+  return `<select name="${name}">
+    <option value="">${escapeHtml(placeholder)}</option>
+    ${hasCurrent || !val ? "" : `<option value="${escapeHtml(val)}" selected>${escapeHtml(val)}</option>`}
+    ${options.map(o=>`<option value="${escapeHtml(o.value)}" ${o.value===val?"selected":""}>${escapeHtml(o.label)}</option>`).join("")}
+  </select>`;
+}
+
+function fieldInputHtml(key, field, editingRecord){
+  const rawVal = editingRecord ? (editingRecord[field] ?? "") : "";
+  const isDate = field.toLowerCase().includes("date") || field==="date" || field==="startDate";
+  const defaultVal = !editingRecord && key === "lessons" && field === "teacher" && !isPrincipal()
+    ? (state.user?.name || "")
+    : (!editingRecord && isDate ? todayIso() : rawVal);
+
+  if(key==="teachers" && field==="password"){
+    const placeholder = editingRecord
+      ? "Leave blank to keep current password"
+      : "Set teacher login password (min 4 chars)";
+    return `<div class="field"><label>Password</label><input name="password" type="password" autocomplete="new-password" placeholder="${placeholder}"></div>`;
+  }
+  if(key==="teachers" && field==="username"){
+    return `<div class="field"><label>Login Username</label><input name="username" value="${escapeHtml(defaultVal)}" placeholder="e.g. ali.teacher" autocomplete="off"></div>`;
+  }
+
+  if(field==="student"){
+    const students = getList("students");
+    const opts = students.map(s=>({
+      value: s.name || "",
+      label: [s.name, s.course, s.batch ? `Batch ${s.batch}` : ""].filter(Boolean).join(" — ")
+    })).filter(o=>o.value);
+    return `<div class="field"><label>${labelFor(field)}</label>${selectHtml("student", opts, defaultVal, opts.length ? "Select Student..." : "No students added yet")}</div>`;
+  }
+
+  if(field==="status" && STATUS_OPTIONS[key]){
+    const opts = STATUS_OPTIONS[key].map(v=>({ value: v, label: v }));
+    return `<div class="field"><label>${labelFor(field)}</label>${selectHtml("status", opts, defaultVal || opts[0].value, "Select Status...")}</div>`;
+  }
+
+  if(field==="course" && key!=="courses"){
+    const courses = getCourseNames();
+    if(courses.length){
+      return `<div class="field"><label>${labelFor(field)}</label>${selectHtml("course", courses.map(c=>({value:c,label:c})), defaultVal, "Select Course...")}</div>`;
+    }
+  }
+
+  if(field==="teacher" && key!=="teachers"){
+    const teachers = uniqueValues(getList("teachers").map(t=>t.name));
+    if(teachers.length){
+      return `<div class="field"><label>${labelFor(field)}</label>${selectHtml("teacher", teachers.map(t=>({value:t,label:t})), defaultVal, "Select Teacher...")}</div>`;
+    }
+  }
+
+  if(field==="shift" && key!=="shifts"){
+    const shifts = uniqueValues(getList("shifts").map(s=>s.name));
+    if(shifts.length){
+      return `<div class="field"><label>${labelFor(field)}</label>${selectHtml("shift", shifts.map(s=>({value:s,label:s})), defaultVal, "Select Shift...")}</div>`;
+    }
+  }
+
+  if(field==="batch" && key!=="batches"){
+    const batches = uniqueValues(getList("batches").map(b=>b.name));
+    if(batches.length){
+      return `<div class="field"><label>${labelFor(field)}</label>${selectHtml("batch", batches.map(b=>({value:b,label:b})), defaultVal, "Select Batch...")}</div>`;
+    }
+  }
+
+  if(field==="module" && key!=="modules"){
+    const modules = uniqueValues(getList("modules").map(m=>m.name));
+    if(modules.length){
+      return `<div class="field"><label>${labelFor(field)}</label>${selectHtml("module", modules.map(m=>({value:m,label:m})), defaultVal, "Select Module...")}</div>`;
+    }
+  }
+
+  if(field==="topic" && key!=="topics"){
+    const topics = uniqueValues(getList("topics").map(t=>t.name));
+    if(topics.length){
+      return `<div class="field"><label>${labelFor(field)}</label>${selectHtml("topic", topics.map(t=>({value:t,label:t})), defaultVal, "Select Topic...")}</div>`;
+    }
+  }
+
+  if(field==="test" && key!=="tests"){
+    const tests = getList("tests");
+    if(tests.length){
+      const opts = tests.map(t=>({ value: t.title || "", label: [t.title, t.course, t.date].filter(Boolean).join(" — ") })).filter(o=>o.value);
+      return `<div class="field"><label>${labelFor(field)}</label>${selectHtml("test", opts, defaultVal, "Select Test...")}</div>`;
+    }
+  }
+
+  return `<div class="field"><label>${labelFor(field)}</label><input name="${field}" value="${escapeHtml(defaultVal)}" ${isDate?"type=\"date\"":""}></div>`;
+}
+
+function renderEntity(key){
+  if(key==="teachers" && !isPrincipal()){
+    state.page="dashboard";
+    renderNav();
+    renderDashboard();
+    return;
+  }
+  const meta=entities[key], list=getList(key);
+  const writable=canWriteEntity(key);
+  const editingRecord = state.editing && state.editing.entity===key
+    ? list.find(item=>item.id===state.editing.id) || null
+    : null;
+
+  const formPanel = writable ? `
+    <div class="panel">
+      <div class="section-title">
+        <h3>${editingRecord ? "Edit" : "Add"} ${meta.title}</h3>
+        <span class="pill">${list.length} records</span>
+      </div>
+      ${key==="teachers" ? `<p style="color:#667085;margin:0 0 12px;font-size:13px">Assign a Login Username and Password so the teacher can sign in on the login page.</p>` : ""}
+      <form id="entityForm" class="form-grid">
+        ${meta.fields.map(f=>fieldInputHtml(key, f, editingRecord)).join("")}
+        <div class="form-actions">
+          <button class="primary" type="submit">${editingRecord ? "Update Record" : "Save Record"}</button>
+          ${editingRecord ? `<button class="secondary" type="button" id="cancelEditBtn">Cancel</button>` : ""}
+        </div>
+        <div id="entityMessage" class="message hidden" style="grid-column:1/-1"></div>
+      </form>
+    </div>` : `
+    <div class="panel">
+      <div class="section-title"><h3>${meta.title}</h3><span class="pill">View Only</span></div>
+      <p style="color:#667085;margin:8px 0 0;font-size:13px">Only Principal can add or modify ${meta.title.toLowerCase()}.</p>
+    </div>`;
+
+  $("content").innerHTML=`
+    ${formPanel}
+    <div class="panel">
+      <h3>${meta.title} List</h3>
+      <div id="tableMessage" class="message hidden" style="margin-bottom:12px"></div>
+      <div class="table-wrap">${tableHtml(key,list)}</div>
+    </div>`;
+
+  if(writable){
+    $("entityForm").addEventListener("submit",(e)=>saveEntity(e,key,editingRecord?.id));
+    if(editingRecord && $("cancelEditBtn")){
+      $("cancelEditBtn").addEventListener("click",()=>{state.editing=null;render();});
+    }
+  }
+}
+
+function renderCourseOutlinePage(){
+  const modules = getList("modules"), topics = getList("topics");
+  const writable = isPrincipal();
+  const editingModule = state.editing && state.editing.entity==="modules"
+    ? modules.find(item=>item.id===state.editing.id) || null
+    : null;
+  const editingTopic = state.editing && state.editing.entity==="topics"
+    ? topics.find(item=>item.id===state.editing.id) || null
+    : null;
+
+  $("content").innerHTML=`
+    ${writable ? `
+    <div class="panel">
+      <div class="section-title"><h3>${editingModule ? "Edit" : "Add"} Module</h3><span class="pill">${modules.length} modules</span></div>
+      <form id="moduleForm" class="form-grid">
+        ${entities.modules.fields.map(f=>fieldInputHtml("modules", f, editingModule)).join("")}
+        <div class="form-actions">
+          <button class="primary" type="submit">${editingModule ? "Update Module" : "Save Module"}</button>
+          ${editingModule ? `<button class="secondary" type="button" id="cancelModEdit">Cancel</button>` : ""}
+        </div>
+        <div id="moduleMessage" class="message hidden" style="grid-column:1/-1"></div>
+      </form>
+    </div>` : `<div class="panel"><div class="section-title"><h3>Course Outline</h3><span class="pill">View Only</span></div><p style="color:#667085;margin:8px 0 0;font-size:13px">Only Principal can add or modify modules and topics.</p></div>`}
+    <div class="panel"><h3>Modules</h3><div class="table-wrap">${tableHtml("modules",modules)}</div></div>
+    ${writable ? `
+    <div class="panel">
+      <div class="section-title"><h3>${editingTopic ? "Edit" : "Add"} Topic</h3><span class="pill">${topics.length} topics</span></div>
+      <form id="topicForm" class="form-grid">
+        ${entities.topics.fields.map(f=>fieldInputHtml("topics", f, editingTopic)).join("")}
+        <div class="form-actions">
+          <button class="primary" type="submit">${editingTopic ? "Update Topic" : "Save Topic"}</button>
+          ${editingTopic ? `<button class="secondary" type="button" id="cancelTopicEdit">Cancel</button>` : ""}
+        </div>
+        <div id="topicMessage" class="message hidden" style="grid-column:1/-1"></div>
+      </form>
+    </div>` : ""}
+    <div class="panel"><h3>Topics</h3><div id="tableMessage" class="message hidden" style="margin-bottom:12px"></div><div class="table-wrap">${tableHtml("topics",topics)}</div></div>`;
+
+  if(writable){
+    $("moduleForm").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const record=Object.fromEntries(new FormData(e.currentTarget).entries());
+      if(editingModule) record.id=editingModule.id;
+      try{await api("data",{method:"POST",body:JSON.stringify({entity:"modules",record})});state.editing=null;await loadData();render();}
+      catch(err){const m=$("moduleMessage");m.textContent=err.message;m.className="message error";}
+    });
+    if(editingModule && $("cancelModEdit")) $("cancelModEdit").addEventListener("click",()=>{state.editing=null;render();});
+
+    $("topicForm").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const record=Object.fromEntries(new FormData(e.currentTarget).entries());
+      if(editingTopic) record.id=editingTopic.id;
+      try{await api("data",{method:"POST",body:JSON.stringify({entity:"topics",record})});state.editing=null;await loadData();render();}
+      catch(err){const m=$("topicMessage");m.textContent=err.message;m.className="message error";}
+    });
+    if(editingTopic && $("cancelTopicEdit")) $("cancelTopicEdit").addEventListener("click",()=>{state.editing=null;render();});
+  }
+}
+
+function renderLessonsPage(){
+  const lessons = getList("lessons");
+  const editingLesson = state.editing && state.editing.entity==="lessons"
+    ? lessons.find(item=>item.id===state.editing.id) || null
+    : null;
+  const students = getFilteredStudents(state.filters.course, state.filters.batch);
+
+  $("content").innerHTML=`
+    <div class="panel">
+      <div class="section-title"><h3>${editingLesson ? "Edit" : "Add"} Daily Class</h3><span class="pill">${lessons.length} classes</span></div>
+      <form id="entityForm" class="form-grid">
+        ${entities.lessons.fields.map(f=>fieldInputHtml("lessons", f, editingLesson)).join("")}
+        <div class="form-actions">
+          <button class="primary" type="submit">${editingLesson ? "Update Class" : "Save Class"}</button>
+          ${editingLesson ? `<button class="secondary" type="button" id="cancelEditBtn">Cancel</button>` : ""}
+        </div>
+        <div id="entityMessage" class="message hidden" style="grid-column:1/-1"></div>
+      </form>
+    </div>
+    <div class="panel">
+      <div class="section-title"><h3>Class Students (Auto-Loaded)</h3><span id="classStudentsCount" class="pill">${students.length} students</span></div>
+      <p class="sub-muted" style="margin:6px 0 12px">Students added by Principal automatically appear here. Selecting a Course above or below filters the class list.</p>
+      ${studentFilterBarHtml()}
+      <div id="classStudentsTable" class="table-wrap">${studentRosterTableHtml(students, "No matching students found.")}</div>
+    </div>
+    <div class="panel">
+      <h3>Daily Classes History</h3>
+      <div id="tableMessage" class="message hidden" style="margin-bottom:12px"></div>
+      <div class="table-wrap">${tableHtml("lessons",lessons)}</div>
+    </div>`;
+
+  const updateClassRoster = () => {
+    const filtered = getFilteredStudents(state.filters.course, state.filters.batch);
+    if($("classStudentsCount")) $("classStudentsCount").textContent = `${filtered.length} students`;
+    if($("classStudentsTable")) $("classStudentsTable").innerHTML = studentRosterTableHtml(filtered, "No matching students found.");
+  };
+
+  $("entityForm").addEventListener("submit",(e)=>saveEntity(e,"lessons",editingLesson?.id));
+  if(editingLesson && $("cancelEditBtn")){
+    $("cancelEditBtn").addEventListener("click",()=>{state.editing=null;render();});
+  }
+  const courseInput = $("entityForm").querySelector('[name="course"]');
+  if(courseInput){
+    courseInput.addEventListener("change",(e)=>{
+      state.filters.course = e.target.value;
+      if($("filterCourse")) $("filterCourse").value = e.target.value;
+      updateClassRoster();
+    });
+  }
+  bindFilterBarEvents(updateClassRoster);
+}
+
+function renderAttendancePage(){
+  const attendance = getList("attendance");
+  const date = state.filters.date || todayIso();
+  const students = getFilteredStudents(state.filters.course, state.filters.batch);
+  const editingRecord = state.editing && state.editing.entity==="attendance"
+    ? attendance.find(item=>item.id===state.editing.id) || null
+    : null;
+
+  const existingByStudent = new Map();
+  for(const rec of attendance){
+    if(String(rec.date || "").trim() === date && rec.student){
+      existingByStudent.set(String(rec.student).trim().toLowerCase(), rec);
+    }
+  }
+
+  $("content").innerHTML=`
+    <div class="panel">
+      <div class="section-title"><h3>Quick Attendance — All Students</h3><span class="pill">${students.length} students</span></div>
+      <p class="sub-muted" style="margin:6px 0 12px">All Students added by Principal are listed automatically below. Mark attendance and save in one click.</p>
+      ${studentFilterBarHtml({
+        showDate: true,
+        extraHtml: `<button type="button" class="secondary" id="markAllPresentBtn">Mark All Present</button>`
+      })}
+      <form id="bulkAttendanceForm">
+        ${students.length ? `<div class="table-wrap"><table>
+          <thead><tr><th>Student</th><th>Course / Batch</th><th>Status</th><th>Remarks</th></tr></thead>
+          <tbody>
+            ${students.map((s, idx)=>{
+              const prev = existingByStudent.get(String(s.name||"").trim().toLowerCase());
+              const statusVal = prev?.status || "Present";
+              const remarksVal = prev?.remarks || "";
+              return `<tr data-student-row="${idx}">
+                <td><strong>${escapeHtml(s.name)}</strong><input type="hidden" class="bulk-student-name" value="${escapeHtml(s.name)}"></td>
+                <td>${escapeHtml([s.course, s.batch, s.shift].filter(Boolean).join(" / ") || "—")}</td>
+                <td>
+                  <select class="inline-select bulk-status">
+                    ${STATUS_OPTIONS.attendance.map(st=>`<option value="${st}" ${st===statusVal?"selected":""}>${st}</option>`).join("")}
+                  </select>
+                </td>
+                <td><input class="inline-input bulk-remarks" value="${escapeHtml(remarksVal)}" placeholder="Optional remarks"></td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table></div>
+        <div class="form-actions" style="margin-top:14px">
+          <button class="primary" type="submit">Save Attendance (${students.length} Students)</button>
+        </div>` : `<div class="empty">No students added yet. Principal must add students first in the Students section.</div>`}
+        <div id="bulkAttendanceMsg" class="message hidden"></div>
+      </form>
+    </div>
+
+    ${editingRecord ? `
+    <div class="panel">
+      <div class="section-title"><h3>Edit Attendance Record</h3><span class="pill">Editing</span></div>
+      <form id="entityForm" class="form-grid">
+        ${entities.attendance.fields.map(f=>fieldInputHtml("attendance", f, editingRecord)).join("")}
+        <div class="form-actions">
+          <button class="primary" type="submit">Update Record</button>
+          <button class="secondary" type="button" id="cancelEditBtn">Cancel</button>
+        </div>
+        <div id="entityMessage" class="message hidden" style="grid-column:1/-1"></div>
+      </form>
+    </div>` : ""}
+
+    <div class="panel">
+      <div class="section-title"><h3>Attendance History</h3><span class="pill">${attendance.length} records</span></div>
+      <div id="tableMessage" class="message hidden" style="margin-bottom:12px"></div>
+      <div class="table-wrap" style="margin-top:12px">${tableHtml("attendance",attendance)}</div>
+    </div>`;
+
+  bindFilterBarEvents(()=>render());
+
+  if($("markAllPresentBtn")){
+    $("markAllPresentBtn").addEventListener("click",()=>{
+      document.querySelectorAll("#bulkAttendanceForm .bulk-status").forEach(sel=>{sel.value="Present";});
+    });
+  }
+
+  $("bulkAttendanceForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const rows = Array.from(document.querySelectorAll("#bulkAttendanceForm tr[data-student-row]"));
+    if(!rows.length) return;
+    const records = rows.map(row=>({
+      date,
+      student: row.querySelector(".bulk-student-name").value,
+      status: row.querySelector(".bulk-status").value,
+      remarks: row.querySelector(".bulk-remarks").value.trim()
+    }));
+    const msg = $("bulkAttendanceMsg");
+    try{
+      await api("data",{method:"POST",body:JSON.stringify({entity:"attendance",records})});
+      await loadData();
+      render();
+      const afterMsg = $("bulkAttendanceMsg");
+      if(afterMsg){afterMsg.textContent=`Saved attendance for ${records.length} students (${date}).`; afterMsg.className="message success";}
+    }catch(err){
+      msg.textContent=err.message; msg.className="message error";
+    }
+  });
+
+  if(editingRecord){
+    $("entityForm").addEventListener("submit",(e)=>saveEntity(e,"attendance",editingRecord.id));
+    $("cancelEditBtn").addEventListener("click",()=>{state.editing=null;render();});
+  }
+}
+
+function renderProgressPage(){
+  const progress = getList("progress");
+  const students = getFilteredStudents(state.filters.course, state.filters.batch);
+  const topics = uniqueValues(getList("topics").map(t=>t.name));
+  const selectedTopic = state.filters.topic || topics[0] || "";
+  const editingRecord = state.editing && state.editing.entity==="progress"
+    ? progress.find(item=>item.id===state.editing.id) || null
+    : null;
+
+  const existingByStudent = new Map();
+  if(selectedTopic){
+    for(const rec of progress){
+      if(String(rec.topic||"").trim().toLowerCase() === selectedTopic.trim().toLowerCase() && rec.student){
+        existingByStudent.set(String(rec.student).trim().toLowerCase(), rec);
+      }
+    }
+  }
+
+  $("content").innerHTML=`
+    <div class="panel">
+      <div class="section-title"><h3>Quick Progress — All Students</h3><span class="pill">${students.length} students</span></div>
+      <p class="sub-muted" style="margin:6px 0 12px">All Students appear automatically below. Choose a Topic and update student progress together.</p>
+      ${studentFilterBarHtml({
+        extraHtml: `<div class="field">
+          <label>Topic</label>
+          ${topics.length
+            ? `<select id="bulkProgressTopic">${topics.map(t=>`<option value="${escapeHtml(t)}" ${t===selectedTopic?"selected":""}>${escapeHtml(t)}</option>`).join("")}</select>`
+            : `<input id="bulkProgressTopic" value="${escapeHtml(selectedTopic)}" placeholder="Enter topic name">`}
+        </div>`
+      })}
+      <form id="bulkProgressForm">
+        ${students.length ? `<div class="table-wrap"><table>
+          <thead><tr><th>Student</th><th>Course / Batch</th><th>Status</th><th>Remarks</th></tr></thead>
+          <tbody>
+            ${students.map((s, idx)=>{
+              const prev = existingByStudent.get(String(s.name||"").trim().toLowerCase());
+              const statusVal = prev?.status || "In Progress";
+              const remarksVal = prev?.remarks || "";
+              return `<tr data-student-row="${idx}">
+                <td><strong>${escapeHtml(s.name)}</strong><input type="hidden" class="bulk-student-name" value="${escapeHtml(s.name)}"></td>
+                <td>${escapeHtml([s.course, s.batch].filter(Boolean).join(" / ") || "—")}</td>
+                <td>
+                  <select class="inline-select bulk-status">
+                    ${STATUS_OPTIONS.progress.map(st=>`<option value="${st}" ${st===statusVal?"selected":""}>${st}</option>`).join("")}
+                  </select>
+                </td>
+                <td><input class="inline-input bulk-remarks" value="${escapeHtml(remarksVal)}" placeholder="Progress notes"></td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table></div>
+        <div class="form-actions" style="margin-top:14px">
+          <button class="primary" type="submit">Save Progress (${students.length} Students)</button>
+        </div>` : `<div class="empty">No students added yet. Principal must add students first in the Students section.</div>`}
+        <div id="bulkProgressMsg" class="message hidden"></div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="section-title"><h3>${editingRecord ? "Edit" : "Add Single"} Progress Record</h3><span class="pill">${progress.length} records</span></div>
+      <form id="entityForm" class="form-grid">
+        ${entities.progress.fields.map(f=>fieldInputHtml("progress", f, editingRecord)).join("")}
+        <div class="form-actions">
+          <button class="primary" type="submit">${editingRecord ? "Update Record" : "Save Record"}</button>
+          ${editingRecord ? `<button class="secondary" type="button" id="cancelEditBtn">Cancel</button>` : ""}
+        </div>
+        <div id="entityMessage" class="message hidden" style="grid-column:1/-1"></div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h3>Progress Records List</h3>
+      <div id="tableMessage" class="message hidden" style="margin-bottom:12px"></div>
+      <div class="table-wrap">${tableHtml("progress",progress)}</div>
+    </div>`;
+
+  bindFilterBarEvents(()=>render());
+  if($("bulkProgressTopic")){
+    $("bulkProgressTopic").addEventListener("change",(e)=>{
+      state.filters.topic = e.target.value;
+      if(topics.length) render();
+    });
+    $("bulkProgressTopic").addEventListener("input",(e)=>{
+      state.filters.topic = e.target.value;
+    });
+  }
+
+  $("bulkProgressForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const topicVal = ($("bulkProgressTopic")?.value || "").trim();
+    const msg = $("bulkProgressMsg");
+    if(!topicVal){
+      msg.textContent="Please select or enter a Topic first."; msg.className="message error"; return;
+    }
+    const rows = Array.from(document.querySelectorAll("#bulkProgressForm tr[data-student-row]"));
+    if(!rows.length) return;
+    const records = rows.map(row=>({
+      student: row.querySelector(".bulk-student-name").value,
+      topic: topicVal,
+      status: row.querySelector(".bulk-status").value,
+      remarks: row.querySelector(".bulk-remarks").value.trim()
+    }));
+    try{
+      await api("data",{method:"POST",body:JSON.stringify({entity:"progress",records})});
+      await loadData();
+      render();
+      const afterMsg = $("bulkProgressMsg");
+      if(afterMsg){afterMsg.textContent=`Saved progress for ${records.length} students on "${topicVal}".`; afterMsg.className="message success";}
+    }catch(err){
+      msg.textContent=err.message; msg.className="message error";
+    }
+  });
+
+  $("entityForm").addEventListener("submit",(e)=>saveEntity(e,"progress",editingRecord?.id));
+  if(editingRecord && $("cancelEditBtn")){
+    $("cancelEditBtn").addEventListener("click",()=>{state.editing=null;render();});
+  }
+}
+
+function renderPracticalsPage(){
+  const practicals = getList("practicals");
+  const students = getFilteredStudents(state.filters.course, state.filters.batch);
+  const date = state.filters.date || todayIso();
+  const editingRecord = state.editing && state.editing.entity==="practicals"
+    ? practicals.find(item=>item.id===state.editing.id) || null
+    : null;
+
+  $("content").innerHTML=`
+    <div class="panel">
+      <div class="section-title"><h3>Quick Practical Work — All Students</h3><span class="pill">${students.length} students</span></div>
+      <p class="sub-muted" style="margin:6px 0 12px">All Students are listed automatically below. Enter a Practical Title and record status for each student.</p>
+      ${studentFilterBarHtml({
+        showDate: true,
+        extraHtml: `<div class="field"><label>Practical Title</label><input id="bulkPracticalTitle" placeholder="e.g. Lab 1: HTML Form"></div>`
+      })}
+      <form id="bulkPracticalsForm">
+        ${students.length ? `<div class="table-wrap"><table>
+          <thead><tr><th>Student</th><th>Course / Batch</th><th>Status</th><th>Remarks</th></tr></thead>
+          <tbody>
+            ${students.map((s, idx)=>`<tr data-student-row="${idx}">
+              <td><strong>${escapeHtml(s.name)}</strong><input type="hidden" class="bulk-student-name" value="${escapeHtml(s.name)}"></td>
+              <td>${escapeHtml([s.course, s.batch].filter(Boolean).join(" / ") || "—")}</td>
+              <td>
+                <select class="inline-select bulk-status">
+                  ${STATUS_OPTIONS.practicals.map(st=>`<option value="${st}">${st}</option>`).join("")}
+                </select>
+              </td>
+              <td><input class="inline-input bulk-remarks" placeholder="Practical notes"></td>
+            </tr>`).join("")}
+          </tbody>
+        </table></div>
+        <div class="form-actions" style="margin-top:14px">
+          <button class="primary" type="submit">Save Practical Work (${students.length} Students)</button>
+        </div>` : `<div class="empty">No students added yet. Principal must add students first in the Students section.</div>`}
+        <div id="bulkPracticalsMsg" class="message hidden"></div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <div class="section-title"><h3>${editingRecord ? "Edit" : "Add Single"} Practical Work</h3><span class="pill">${practicals.length} records</span></div>
+      <form id="entityForm" class="form-grid">
+        ${entities.practicals.fields.map(f=>fieldInputHtml("practicals", f, editingRecord)).join("")}
+        <div class="form-actions">
+          <button class="primary" type="submit">${editingRecord ? "Update Record" : "Save Record"}</button>
+          ${editingRecord ? `<button class="secondary" type="button" id="cancelEditBtn">Cancel</button>` : ""}
+        </div>
+        <div id="entityMessage" class="message hidden" style="grid-column:1/-1"></div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h3>Practical Work List</h3>
+      <div id="tableMessage" class="message hidden" style="margin-bottom:12px"></div>
+      <div class="table-wrap">${tableHtml("practicals",practicals)}</div>
+    </div>`;
+
+  bindFilterBarEvents(()=>render());
+
+  $("bulkPracticalsForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const titleVal = ($("bulkPracticalTitle")?.value || "").trim();
+    const msg = $("bulkPracticalsMsg");
+    if(!titleVal){
+      msg.textContent="Please enter a Practical Title first."; msg.className="message error"; return;
+    }
+    const rows = Array.from(document.querySelectorAll("#bulkPracticalsForm tr[data-student-row]"));
+    if(!rows.length) return;
+    const records = rows.map(row=>({
+      date,
+      student: row.querySelector(".bulk-student-name").value,
+      title: titleVal,
+      status: row.querySelector(".bulk-status").value,
+      remarks: row.querySelector(".bulk-remarks").value.trim()
+    }));
+    try{
+      await api("data",{method:"POST",body:JSON.stringify({entity:"practicals",records})});
+      await loadData();
+      render();
+      const afterMsg = $("bulkPracticalsMsg");
+      if(afterMsg){afterMsg.textContent=`Saved practical work "${titleVal}" for ${records.length} students.`; afterMsg.className="message success";}
+    }catch(err){
+      msg.textContent=err.message; msg.className="message error";
+    }
+  });
+
+  $("entityForm").addEventListener("submit",(e)=>saveEntity(e,"practicals",editingRecord?.id));
+  if(editingRecord && $("cancelEditBtn")){
+    $("cancelEditBtn").addEventListener("click",()=>{state.editing=null;render();});
+  }
+}
+
+function labelFor(f){
+  if(f==="username") return "Login Username";
+  return f.replace(/([A-Z])/g," $1").replace(/^./,s=>s.toUpperCase());
+}
+
+function cellValue(key, r, f){
+  if(key==="teachers" && f==="password"){
+    if(!r.username && !r.hasPassword) return "Not set";
+    return r.hasPassword ? "••••••" : "No password";
+  }
+  return escapeHtml(r[f]);
+}
+
+function tableHtml(key,list){
+  if(!list.length)return `<div class="empty">No records yet.</div>`;
+  const fields=entities[key].fields;
+  const writable=canWriteEntity(key);
+  return `<table><thead><tr>${fields.map(f=>`<th>${labelFor(f)}</th>`).join("")}${writable?"<th>Action</th>":""}</tr></thead><tbody>
+  ${list.map(r=>{
+    const isConfirming = state.confirmDeleteKeyId === `${key}:${r.id}`;
+    const actionBtns = writable ? `<td class="actions-cell">
+      <button class="edit-btn" type="button" data-entity="${key}" data-id="${escapeHtml(r.id)}">Edit</button>
+      ${isConfirming
+        ? `<button class="del confirm-del" type="button" data-entity="${key}" data-id="${escapeHtml(r.id)}">Confirm Delete</button> <button class="edit-btn cancel-del" type="button">Cancel</button>`
+        : `<button class="del" type="button" data-entity="${key}" data-id="${escapeHtml(r.id)}">Delete</button>`}
+    </td>` : "";
+    return `<tr>${fields.map(f=>`<td>${cellValue(key, r, f)}</td>`).join("")}${actionBtns}</tr>`;
+  }).join("")}</tbody></table>`;
+}
+
+async function saveEntity(event,key,existingId=null){
+  event.preventDefault();
+  const form=event.currentTarget; const record=Object.fromEntries(new FormData(form).entries());
+  if(existingId) record.id=existingId;
+  try{
+    await api("data",{method:"POST",body:JSON.stringify({entity:key,record})});
+    state.editing=null;
+    await loadData(); render();
+  }catch(err){
+    const m=$("entityMessage");
+    if(m){m.textContent=err.message; m.className="message error";}
+  }
+}
+
+async function deleteRecord(key,id){
+  if(state.confirmDeleteKeyId !== `${key}:${id}`){
+    state.confirmDeleteKeyId = `${key}:${id}`;
+    render();
+    return;
+  }
+  try{
+    state.confirmDeleteKeyId = null;
+    await api("data",{method:"DELETE",body:JSON.stringify({entity:key,id})});
+    if(state.editing && state.editing.entity===key && state.editing.id===id) state.editing=null;
+    await loadData(); render();
+  }catch(err){
+    const m=$("tableMessage");
+    if(m){m.textContent=err.message; m.className="message error";}
+  }
+}
+
+function renderTests(){
+  const tests=getList("tests"), results=getList("results");
+  const selectedTest = state.filters.test || tests[0]?.title || "";
+  const students = getFilteredStudents(state.filters.course, state.filters.batch);
+  const editingTest = state.editing && state.editing.entity==="tests"
+    ? tests.find(item=>item.id===state.editing.id) || null
+    : null;
+  const editingResult = state.editing && state.editing.entity==="results"
+    ? results.find(item=>item.id===state.editing.id) || null
+    : null;
+
+  const existingByStudent = new Map();
+  if(selectedTest){
+    for(const rec of results){
+      if(String(rec.test||"").trim().toLowerCase() === selectedTest.trim().toLowerCase() && rec.student){
+        existingByStudent.set(String(rec.student).trim().toLowerCase(), rec);
+      }
+    }
+  }
+
+  $("content").innerHTML=`<div class="panel"><h3>Tests &amp; Results</h3>
+  <p style="color:#667085;margin:0">Create tests first, then record marks for all students automatically listed below.</p></div>
+  <div class="panel">
+    <div class="section-title"><h3>${editingTest ? "Edit" : "Add"} Test</h3><span class="pill">${tests.length} records</span></div>
+    <form id="testForm" class="form-grid">
+      ${entities.tests.fields.map(f=>fieldInputHtml("tests", f, editingTest)).join("")}
+      <div class="form-actions">
+        <button class="primary" type="submit">${editingTest ? "Update Test" : "Save Test"}</button>
+        ${editingTest ? `<button class="secondary" type="button" id="cancelTestEditBtn">Cancel</button>` : ""}
+      </div>
+      <div id="testMessage" class="message hidden" style="grid-column:1/-1"></div>
+    </form>
+  </div>
+  <div class="panel"><h3>Tests</h3><div class="table-wrap">${tableHtml("tests",tests)}</div></div>
+
+  <div class="panel">
+    <div class="section-title"><h3>Quick Marks Entry — All Students</h3><span class="pill">${students.length} students</span></div>
+    ${studentFilterBarHtml({
+      extraHtml: `<div class="field">
+        <label>Select Test</label>
+        ${tests.length
+          ? `<select id="bulkResultTest">${tests.map(t=>`<option value="${escapeHtml(t.title)}" ${t.title===selectedTest?"selected":""}>${escapeHtml([t.title, t.course].filter(Boolean).join(" — "))}</option>`).join("")}</select>`
+          : `<input id="bulkResultTest" value="${escapeHtml(selectedTest)}" placeholder="Create a test above first">`}
+      </div>`
+    })}
+    <form id="bulkResultsForm">
+      ${students.length && tests.length ? `<div class="table-wrap"><table>
+        <thead><tr><th>Student</th><th>Course / Batch</th><th>Marks</th><th>Grade</th><th>Remarks</th></tr></thead>
+        <tbody>
+          ${students.map((s, idx)=>{
+            const prev = existingByStudent.get(String(s.name||"").trim().toLowerCase());
+            return `<tr data-student-row="${idx}">
+              <td><strong>${escapeHtml(s.name)}</strong><input type="hidden" class="bulk-student-name" value="${escapeHtml(s.name)}"></td>
+              <td>${escapeHtml([s.course, s.batch].filter(Boolean).join(" / ") || "—")}</td>
+              <td><input class="inline-input bulk-marks" value="${escapeHtml(prev?.marks || "")}" placeholder="Marks"></td>
+              <td><input class="inline-input bulk-grade" value="${escapeHtml(prev?.grade || "")}" placeholder="Grade"></td>
+              <td><input class="inline-input bulk-remarks" value="${escapeHtml(prev?.remarks || "")}" placeholder="Remarks"></td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table></div>
+      <div class="form-actions" style="margin-top:14px">
+        <button class="primary" type="submit">Save Results (${students.length} Students)</button>
+      </div>` : `<div class="empty">${!tests.length ? "Add a Test above first to enter student marks." : "No students added yet."}</div>`}
+      <div id="bulkResultsMsg" class="message hidden"></div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <div class="section-title"><h3>${editingResult ? "Edit" : "Add Single"} Result</h3><span class="pill">${results.length} records</span></div>
+    <form id="resultForm" class="form-grid">
+      ${entities.results.fields.map(f=>fieldInputHtml("results", f, editingResult)).join("")}
+      <div class="form-actions">
+        <button class="primary" type="submit">${editingResult ? "Update Result" : "Save Result"}</button>
+        ${editingResult ? `<button class="secondary" type="button" id="cancelResultEditBtn">Cancel</button>` : ""}
+      </div>
+      <div id="resultMessage" class="message hidden" style="grid-column:1/-1"></div>
+    </form>
+  </div>
+  <div class="panel"><h3>Results</h3><div id="tableMessage" class="message hidden" style="margin-bottom:12px"></div><div class="table-wrap">${tableHtml("results",results)}</div></div>`;
+
+  bindFilterBarEvents(()=>render());
+  if($("bulkResultTest")){
+    $("bulkResultTest").addEventListener("change",(e)=>{state.filters.test=e.target.value;render();});
+  }
+
+  $("bulkResultsForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const testVal = ($("bulkResultTest")?.value || "").trim();
+    const msg = $("bulkResultsMsg");
+    if(!testVal){msg.textContent="Please select a Test first.";msg.className="message error";return;}
+    const rows = Array.from(document.querySelectorAll("#bulkResultsForm tr[data-student-row]"));
+    const records = rows.map(row=>({
+      test: testVal,
+      student: row.querySelector(".bulk-student-name").value,
+      marks: row.querySelector(".bulk-marks").value.trim(),
+      grade: row.querySelector(".bulk-grade").value.trim(),
+      remarks: row.querySelector(".bulk-remarks").value.trim()
+    })).filter(r=>r.marks !== "" || r.grade !== "" || r.remarks !== "");
+    if(!records.length){
+      msg.textContent="Enter marks or grade for at least one student."; msg.className="message error"; return;
+    }
+    try{
+      await api("data",{method:"POST",body:JSON.stringify({entity:"results",records})});
+      await loadData();
+      render();
+      const afterMsg = $("bulkResultsMsg");
+      if(afterMsg){afterMsg.textContent=`Saved results for ${records.length} students on "${testVal}".`; afterMsg.className="message success";}
+    }catch(err){
+      msg.textContent=err.message; msg.className="message error";
+    }
+  });
+
+  $("testForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const record=Object.fromEntries(new FormData(e.currentTarget).entries());
+    if(editingTest) record.id=editingTest.id;
+    try{await api("data",{method:"POST",body:JSON.stringify({entity:"tests",record})});state.editing=null;await loadData();render();}
+    catch(err){const m=$("testMessage");m.textContent=err.message;m.className="message error";}
+  });
+  if(editingTest && $("cancelTestEditBtn")){
+    $("cancelTestEditBtn").addEventListener("click",()=>{state.editing=null;render();});
+  }
+
+  $("resultForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const record=Object.fromEntries(new FormData(e.currentTarget).entries());
+    if(editingResult) record.id=editingResult.id;
+    try{await api("data",{method:"POST",body:JSON.stringify({entity:"results",record})});state.editing=null;await loadData();render();}
+    catch(err){const m=$("resultMessage");m.textContent=err.message;m.className="message error";}
+  });
+  if(editingResult && $("cancelResultEditBtn")){
+    $("cancelResultEditBtn").addEventListener("click",()=>{state.editing=null;render();});
+  }
+}
+
+function render(){
+  const title=navItems.find(x=>x[0]===state.page)?.[1]||"Dashboard";
+  $("pageTitle").textContent=title;
+  renderUserChip();
+  if(state.page==="dashboard") renderDashboard();
+  else if(state.page==="modules") renderCourseOutlinePage();
+  else if(state.page==="lessons") renderLessonsPage();
+  else if(state.page==="attendance") renderAttendancePage();
+  else if(state.page==="progress") renderProgressPage();
+  else if(state.page==="practicals") renderPracticalsPage();
+  else if(state.page==="tests") renderTests();
+  else renderEntity(state.page);
+
+  document.querySelectorAll(".del").forEach(btn=>{
+    btn.addEventListener("click",()=>deleteRecord(btn.dataset.entity || state.page, btn.dataset.id));
+  });
+  document.querySelectorAll(".cancel-del").forEach(btn=>{
+    btn.addEventListener("click",()=>{state.confirmDeleteKeyId=null;render();});
+  });
+  document.querySelectorAll(".edit-btn[data-id]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      state.editing={entity:btn.dataset.entity || state.page, id:btn.dataset.id};
+      state.confirmDeleteKeyId=null;
+      render();
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+  });
+}
+
+$("loginForm").addEventListener("submit",loginUser);
+$("logoutBtn").addEventListener("click",logout);
+
+(async function boot(){
+  if(!state.token){setLoggedIn(false);return;}
+  try{await loadData();setLoggedIn(true);renderNav();render();}
+  catch{state.token="";state.user=null;localStorage.removeItem("lit_token");setLoggedIn(false);}
+})();
+</script>
+</body>
+</html>
